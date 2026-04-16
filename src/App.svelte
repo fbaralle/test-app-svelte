@@ -1,6 +1,13 @@
 <script lang="ts">
   import CryptoDashboard from './lib/CryptoDashboard.svelte'
+  import FavoritesSection from './lib/FavoritesSection.svelte'
   import HealthcheckToolbar from './lib/HealthcheckToolbar.svelte'
+
+  let favoritesRef: FavoritesSection
+
+  function handleFavoriteChange() {
+    favoritesRef?.refresh()
+  }
 </script>
 
 <div class="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 pb-12">
@@ -16,7 +23,8 @@
     </p>
   </header>
   <main class="flex-1 px-4 pb-12">
-    <CryptoDashboard />
+    <FavoritesSection bind:this={favoritesRef} />
+    <CryptoDashboard onFavoriteChange={handleFavoriteChange} />
   </main>
   <footer class="border-t border-gray-200 dark:border-gray-700 bg-white/60 dark:bg-gray-900/60 backdrop-blur">
     <div class="max-w-6xl mx-auto px-4 py-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-gray-500 dark:text-gray-400">

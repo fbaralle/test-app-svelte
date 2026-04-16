@@ -1,6 +1,13 @@
 <script lang="ts">
   import { onDestroy } from 'svelte'
 
+  // Event dispatcher for favorites
+  interface Props {
+    onFavoriteChange?: () => void
+  }
+
+  let { onFavoriteChange }: Props = $props()
+
   interface Coin {
     id: string
     symbol: string
@@ -140,6 +147,66 @@
   let countdown = $state(0)
   let countdownInterval: ReturnType<typeof setInterval> | null = null
   let refreshIntervalId: ReturnType<typeof setInterval> | null = null
+  let favoriteIds = $state<Set<string>>(new Set())
+
+  const basePath = import.meta.env.VITE_BASE_PATH || ''
+
+  // Fetch current favorites to track which coins are favorited
+  async function fetchFavoriteIds() {
+    try {
+      const res = await fetch(`${basePath}/api/favorites?user_id=public`)
+      if (res.ok) {
+        const data = await res.json()
+        favoriteIds = new Set((data.favorites || []).map((f: { coin_id: string }) => f.coin_id))
+      }
+    } catch (e) {
+      console.error('Failed to fetch favorites:', e)
+    }
+  }
+
+  // Toggle favorite status for a coin
+  async function toggleFavorite(coin: Coin, event: MouseEvent) {
+    event.stopPropagation() // Prevent row selection
+
+    const isFavorited = favoriteIds.has(coin.id)
+
+    try {
+      if (isFavorited) {
+        const res = await fetch(`${basePath}/api/favorites?user_id=public&coin_id=${coin.id}`, {
+          method: 'DELETE',
+        })
+        if (res.ok) {
+          const newSet = new Set(favoriteIds)
+          newSet.delete(coin.id)
+          favoriteIds = newSet
+          onFavoriteChange?.()
+        }
+      } else {
+        const res = await fetch(`${basePath}/api/favorites`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            user_id: 'public',
+            coin_id: coin.id,
+            coin_name: coin.name,
+            coin_symbol: coin.symbol,
+            coin_image: coin.image,
+          }),
+        })
+        if (res.ok) {
+          const newSet = new Set(favoriteIds)
+          newSet.add(coin.id)
+          favoriteIds = newSet
+          onFavoriteChange?.()
+        }
+      }
+    } catch (e) {
+      console.error('Failed to toggle favorite:', e)
+    }
+  }
+
+  // Load favorites on mount
+  fetchFavoriteIds()
 
   // Toast functions
   function addToast(toast: { label: string; code: string; detail: string; type?: 'error' | 'info' }) {
@@ -428,6 +495,7 @@
       <table class="w-full text-sm">
         <thead>
           <tr class="bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 text-left">
+            <th class="px-2 py-3 font-medium text-center w-10"></th>
             <th
               class="px-4 py-3 font-medium cursor-pointer hover:text-gray-900 dark:hover:text-white whitespace-nowrap"
               onclick={() => handleSort('market_cap_rank')}
@@ -467,7 +535,7 @@
           {#if isLoading && coins.length === 0}
             {#each Array(10) as _, i}
               <tr class="border-t border-gray-100 dark:border-gray-800 animate-pulse">
-                <td class="px-4 py-4" colspan="8">
+                <td class="px-4 py-4" colspan="9">
                   <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
                 </td>
               </tr>
@@ -480,6 +548,19 @@
                   ? 'bg-indigo-50 dark:bg-indigo-900/20'
                   : 'hover:bg-gray-50 dark:hover:bg-gray-800/50'}"
               >
+                <td class="px-2 py-3 text-center">
+                  <button
+                    onclick={(e) => toggleFavorite(coin, e)}
+                    class="p-1 rounded-lg transition-colors {favoriteIds.has(coin.id)
+                      ? 'text-yellow-500 hover:text-yellow-600'
+                      : 'text-gray-300 dark:text-gray-600 hover:text-yellow-500'}"
+                    title={favoriteIds.has(coin.id) ? 'Remove from favorites' : 'Add to favorites'}
+                  >
+                    <svg class="w-5 h-5" fill={favoriteIds.has(coin.id) ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                    </svg>
+                  </button>
+                </td>
                 <td class="px-4 py-3 text-gray-500 dark:text-gray-400 font-mono">
                   {coin.market_cap_rank}
                 </td>
