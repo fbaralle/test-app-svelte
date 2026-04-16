@@ -1,8 +1,9 @@
 <script lang="ts">
   import CryptoDashboard from './lib/CryptoDashboard.svelte'
+  import HealthcheckToolbar from './lib/HealthcheckToolbar.svelte'
 </script>
 
-<div class="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+<div class="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 pb-12">
   <header class="pt-10 pb-6 text-center">
     <p class="text-xs font-medium uppercase tracking-widest text-indigo-600 dark:text-indigo-400 mb-2">
       Webflow Cloud Test App
@@ -23,4 +24,5 @@
       <p>Svelte 5 + Vite + Tailwind CSS</p>
     </div>
   </footer>
+  <HealthcheckToolbar />
 </div>

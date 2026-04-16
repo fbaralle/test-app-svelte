@@ -5,14 +5,18 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:cf": "vite build && wrangler dev",
     "build": "vite build",
-    "preview": "vite preview",
-    "check": "svelte-check --tsconfig ./tsconfig.json"
+    "preview": "vite build && wrangler dev",
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "db:setup": "wrangler d1 migrations apply DB --local",
+    "cf:types": "wrangler types"
   },
   "dependencies": {
     "svelte": "^5.34.7"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260416.2",
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
     "@tsconfig/svelte": "^5.0.4",
     "autoprefixer": "^10.4.21",
@@ -20,6 +24,7 @@
     "svelte-check": "^4.2.1",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.8.3",
-    "vite": "^6.3.5"
+    "vite": "^6.3.5",
+    "wrangler": "^4.83.0"
   }
 }
