@@ -1,6 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte'
 
+  const basePath = import.meta.env.VITE_API_MOUNT_PATH || "";
+
   interface Props {
     compact?: boolean
   }
@@ -21,7 +23,7 @@
 
   async function fetchExports() {
     try {
-      const res = await fetch('/api/export')
+      const res = await fetch(`${basePath}/api/export`)
       if (!res.ok) {
         const errData = await res.json()
         throw new Error(errData.error || `HTTP ${res.status}`)
@@ -38,7 +40,7 @@
   async function createExport() {
     isCreating = true
     try {
-      const res = await fetch('/api/export', {
+      const res = await fetch(`${basePath}/api/export`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

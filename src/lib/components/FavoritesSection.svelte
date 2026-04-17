@@ -1,6 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte'
 
+  const basePath = import.meta.env.VITE_API_MOUNT_PATH || "";
+
   interface Favorite {
     id: number
     user_id: string
@@ -20,7 +22,7 @@
     isLoading = true
     error = null
     try {
-      const res = await fetch('/api/favorites?user_id=public')
+      const res = await fetch(`${basePath}/api/favorites?user_id=public`)
       if (!res.ok) {
         throw new Error(`HTTP ${res.status}`)
       }
@@ -35,7 +37,7 @@
 
   async function removeFavorite(coinId: string) {
     try {
-      const res = await fetch(`/api/favorites?user_id=public&coin_id=${coinId}`, {
+      const res = await fetch(`${basePath}/api/favorites?user_id=public&coin_id=${coinId}`, {
         method: 'DELETE',
       })
       if (res.ok) {

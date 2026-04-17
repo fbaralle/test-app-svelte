@@ -1,6 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte'
 
+  const basePath = import.meta.env.VITE_API_MOUNT_PATH || "";
+
   interface Props {
     compact?: boolean
   }
@@ -19,7 +21,7 @@
 
   async function fetchPageViews() {
     try {
-      const res = await fetch('/api/pageviews')
+      const res = await fetch(`${basePath}/api/pageviews`)
       if (!res.ok) {
         const errData = await res.json()
         throw new Error(errData.error || `HTTP ${res.status}`)
@@ -42,7 +44,7 @@
         localStorage.setItem('visitor_id', visitorId)
       }
 
-      const res = await fetch('/api/pageviews', {
+      const res = await fetch(`${basePath}/api/pageviews`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ visitorId }),

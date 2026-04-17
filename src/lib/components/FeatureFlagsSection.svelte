@@ -1,6 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte'
 
+  const basePath = import.meta.env.VITE_API_MOUNT_PATH || "";
+
   interface Props {
     compact?: boolean
   }
@@ -26,7 +28,7 @@
 
   async function fetchFlags() {
     try {
-      const res = await fetch('/api/flags')
+      const res = await fetch(`${basePath}/api/flags`)
       const data = await res.json()
       if (data.error && res.status !== 200) {
         error = data.error
@@ -42,7 +44,7 @@
   async function toggleFlag(flag: string) {
     updating = flag
     try {
-      const res = await fetch('/api/flags', {
+      const res = await fetch(`${basePath}/api/flags`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ flag, value: !flags[flag] }),
