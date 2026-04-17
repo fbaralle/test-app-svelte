@@ -5,6 +5,7 @@
   import PageViewsSection from './lib/components/PageViewsSection.svelte'
   import FeatureFlagsSection from './lib/components/FeatureFlagsSection.svelte'
   import ExportsSection from './lib/components/ExportsSection.svelte'
+  import EnvDebugSection from './lib/components/EnvDebugSection.svelte'
 
   let favoritesRef: FavoritesSection
 
@@ -29,11 +30,12 @@
     <FavoritesSection bind:this={favoritesRef} />
     <CryptoDashboard onFavoriteChange={handleFavoriteChange} />
 
-    <!-- Compact sections: Page Views, Feature Flags, Exports -->
-    <div class="w-full max-w-6xl mx-auto mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <!-- Compact sections: Page Views, Feature Flags, Exports, Env Debug -->
+    <div class="w-full max-w-6xl mx-auto mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       <PageViewsSection compact />
       <FeatureFlagsSection compact />
       <ExportsSection compact />
+      <EnvDebugSection compact />
     </div>
   </main>
   <footer class="border-t border-gray-200 dark:border-gray-700 bg-white/60 dark:bg-gray-900/60 backdrop-blur">
