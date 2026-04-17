@@ -16,13 +16,11 @@
   let isLoading = $state(false)
   let error = $state<string | null>(null)
 
-  const basePath = import.meta.env.VITE_BASE_PATH || ''
-
   async function fetchFavorites() {
     isLoading = true
     error = null
     try {
-      const res = await fetch(`${basePath}/api/favorites?user_id=public`)
+      const res = await fetch('/api/favorites?user_id=public')
       if (!res.ok) {
         throw new Error(`HTTP ${res.status}`)
       }
@@ -37,7 +35,7 @@
 
   async function removeFavorite(coinId: string) {
     try {
-      const res = await fetch(`${basePath}/api/favorites?user_id=public&coin_id=${coinId}`, {
+      const res = await fetch(`/api/favorites?user_id=public&coin_id=${coinId}`, {
         method: 'DELETE',
       })
       if (res.ok) {

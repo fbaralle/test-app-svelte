@@ -1,7 +1,7 @@
 <script lang="ts">
   import CryptoDashboard from './lib/CryptoDashboard.svelte'
-  import FavoritesSection from './lib/FavoritesSection.svelte'
-  import HealthcheckToolbar from './lib/HealthcheckToolbar.svelte'
+  import FavoritesSection from './lib/components/FavoritesSection.svelte'
+  import HealthcheckToolbar from './lib/components/HealthcheckToolbar.svelte'
 
   let favoritesRef: FavoritesSection
 
