@@ -5,6 +5,9 @@ import { svelte } from '@sveltejs/vite-plugin-svelte';
 export default defineConfig({
   base: process.env.COSMIC_MOUNT_PATH || process.env.VITE_BASE_PATH || '',
   plugins: [svelte()],
+  define: {
+    'import.meta.env.PUBLIC_API_MOUNT_PATH': JSON.stringify(process.env.PUBLIC_API_MOUNT_PATH || '')
+  },
   build: {
     sourcemap: true,
     minify: 'esbuild',

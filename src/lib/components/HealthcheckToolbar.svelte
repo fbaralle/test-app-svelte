@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
 
-  const basePath = import.meta.env.VITE_API_MOUNT_PATH || "";
+  const basePath = import.meta.env.PUBLIC_API_MOUNT_PATH || "";
 
   interface ServiceStatus {
     status: 'ok' | 'error';
